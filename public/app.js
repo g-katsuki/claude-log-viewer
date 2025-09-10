@@ -206,13 +206,46 @@ function formatMessageContent(content) {
     if (!content) return '';
     
     // HTMLエスケープ
-    const escaped = content
+    let escaped = content
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
     
+    // コードブロックを先に保護（プレースホルダーに置換）
+    const codeBlocks = [];
+    escaped = escaped.replace(/```[\s\S]*?```/g, function(match, offset) {
+        const index = codeBlocks.length;
+        codeBlocks.push(match.replace(/```([^\n]*)\n?/g, '').replace(/\n```$/, ''));
+        return `__CODEBLOCK_${index}__`;
+    });
+    
+    // マークダウン形式の変換
+    escaped = escaped
+        // ヘッダー
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        // 太字
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // イタリック
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        // リスト
+        .replace(/^- (.*$)/gm, '<li>$1</li>')
+        // URLを自動リンク
+        .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+    
+    // リストをulで囲む
+    escaped = escaped.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+    
     // 改行を<br>に変換
-    return escaped.replace(/\n/g, '<br>');
+    escaped = escaped.replace(/\n/g, '<br>');
+    
+    // コードブロックを復元
+    escaped = escaped.replace(/__CODEBLOCK_(\d+)__/g, function(match, index) {
+        return `<pre><code>${codeBlocks[index]}</code></pre>`;
+    });
+    
+    return escaped;
 }
 
 function highlightSearchTerm(text, term) {
