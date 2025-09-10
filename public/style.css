@@ -79,10 +79,22 @@ body {
     margin-left: auto;
 }
 
+/* 通常のAI回答（デフォルト） */
 .message-assistant .message-content {
-    background-color: white;
-    border: 1px solid #dee2e6;
+    background-color: #e3f2fd;
+    border: 1px solid #90caf9;
     color: #212529;
+}
+
+/* Thinkingメッセージ */
+.message-assistant .message-content:has(.message-text[data-thinking="true"]) {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.message-content .message-text[data-thinking="true"] {
+    font-style: italic;
+    opacity: 0.8;
 }
 
 .message-timestamp {

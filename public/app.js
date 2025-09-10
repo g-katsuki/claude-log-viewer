@@ -102,14 +102,17 @@ function renderConversation(data) {
         </small>
     `;
     
-    const messagesHtml = data.messages.map(message => `
-        <div class="message message-${message.type}">
-            <div class="message-content">
-                <div class="message-text">${formatMessageContent(message.content)}</div>
-                <div class="message-timestamp">${formatTime(message.timestamp)}</div>
+    const messagesHtml = data.messages.map(message => {
+        const isThinking = message.content.includes('🤔 Thinking:');
+        return `
+            <div class="message message-${message.type}">
+                <div class="message-content">
+                    <div class="message-text" ${isThinking ? 'data-thinking="true"' : ''}>${formatMessageContent(message.content)}</div>
+                    <div class="message-timestamp">${formatTime(message.timestamp)}</div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     
     body.innerHTML = `<div class="conversation-area">${messagesHtml}</div>`;
     

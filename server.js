@@ -25,10 +25,12 @@ function parseJSONL(filePath) {
         if (msg.isMeta) return false;
         if (!msg.message || !msg.message.content) return false;
         
-        // ツール結果のみのメッセージも除外（ユーザーメッセージでない限り）
-        if (msg.type === 'user' && Array.isArray(msg.message.content)) {
-          const hasOnlyToolResults = msg.message.content.every(item => item.type === 'tool_result');
-          if (hasOnlyToolResults) return false;
+        // ツール使用のみ・ツール結果のみのメッセージを除外
+        if (Array.isArray(msg.message.content)) {
+          const hasOnlyToolMessages = msg.message.content.every(item => 
+            item.type === 'tool_use' || item.type === 'tool_result'
+          );
+          if (hasOnlyToolMessages) return false;
         }
         
         return true;
@@ -110,15 +112,8 @@ function getSessionMessages(sessionId) {
           result.push(item.text);
         } else if (item.type === 'thinking') {
           result.push(`🤔 Thinking: ${item.thinking}`);
-        } else if (item.type === 'tool_use') {
-          result.push(`🔧 Tool: ${item.name}`);
-        } else if (item.type === 'tool_result') {
-          if (item.content && item.content.length < 100) {
-            result.push(`📋 Result: ${item.content}`);
-          } else {
-            result.push(`📋 Tool result (${item.is_error ? 'error' : 'success'})`);
-          }
         }
+        // ツール使用とツール結果は非表示
       }
       
       return result.length > 0 ? result.join('\n') : 'No content';
