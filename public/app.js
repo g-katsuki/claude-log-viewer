@@ -49,7 +49,7 @@ function renderSessionList() {
     
     const html = sessions.map(session => `
         <div class="session-item" data-session-id="${session.sessionId}">
-            <div class="session-title">${formatProjectName(session.projectName)}</div>
+            <div class="session-title">${session.projectName}</div>
             <div class="session-preview">${session.firstMessage}</div>
             <div class="session-meta">
                 <span><i class="bi bi-chat"></i> ${session.messageCount}</span>
@@ -96,7 +96,7 @@ function renderConversation(data) {
     const body = document.getElementById('conversationBody');
     
     header.innerHTML = `
-        <h5 class="mb-0">${formatProjectName(data.session.projectName)}</h5>
+        <h5 class="mb-0">${data.session.projectName}</h5>
         <small class="text-muted">
             ${data.messages.length} messages • ${formatDate(data.session.lastModified)}
         </small>
@@ -155,7 +155,7 @@ function renderSearchResults(results, query) {
         <div class="search-result-item" data-session-id="${result.sessionId}">
             <div class="search-result-content">${highlightSearchTerm(result.content, query)}</div>
             <div class="search-result-meta">
-                <span class="text-primary">${formatProjectName(result.projectName)}</span>
+                <span class="text-primary">${result.projectName}</span>
                 <span>${formatDate(result.timestamp)}</span>
             </div>
         </div>

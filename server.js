@@ -71,9 +71,29 @@ function getAllSessions() {
           }
         }
         
+        // メッセージから実際のcwdを取得（最も正確）
+        let displayPath = null;
+        if (messages.length > 0) {
+          const firstMsg = messages[0];
+          if (firstMsg && firstMsg.cwd) {
+            // 実際のcwd例: "C:\\Users\\go.katsuki\\Desktop\\workspace\\claude-ws\\claude-log"
+            displayPath = firstMsg.cwd.replace(/\\/g, '/');
+          }
+        }
+        
+        // フォールバック: projectDirを適切にデコード
+        if (!displayPath) {
+          // projectDir例: "C--Users-go-katsuki-Desktop-workspace-claude-ws-claude-log"
+          // まずC--をC:\に変換
+          let decoded = projectDir.replace(/^C--/, 'C:\\');
+          // 残りの部分で、単一の-は\に、--は-に変換（ディレクトリ名内のハイフン保持）
+          // しかしこの方法は複雑すぎるため、実際のcwdが取得できない場合は簡略表示
+          displayPath = `Project: ${projectDir}`;
+        }
+        
         sessions.push({
           sessionId,
-          projectName: projectDir.replace(/C--/g, 'C:\\').replace(/-/g, '\\'),
+          projectName: displayPath, // 表示用に/区切りのパスを使用
           lastModified: stat.mtime,
           messageCount: messages.length,
           firstMessage: firstMessageContent,
@@ -167,7 +187,7 @@ function searchInSessions(query) {
       if (content.toLowerCase().includes(queryLower)) {
         results.push({
           sessionId: session.sessionId,
-          projectName: session.projectName,
+          projectName: session.projectName, // 既に/区切りに変換済み
           messageId: msg.uuid,
           type: msg.type,
           content: content.length > 200 ? content.substring(0, 200) + '...' : content,

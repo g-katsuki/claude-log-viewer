@@ -39,6 +39,17 @@ header {
     box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
 }
 
+.form-control::placeholder {
+    color: #888 !important;
+}
+
+/* 検索ボックス周りの文字 */
+.input-group-text {
+    background-color: #555 !important;
+    border: 1px solid #555 !important;
+    color: #e0e0e0 !important;
+}
+
 /* ダークボタン */
 .btn-outline-primary {
     color: #4a90e2 !important;
@@ -71,6 +82,44 @@ header {
 }
 
 .modal-body {
+    color: #e0e0e0 !important;
+}
+
+/* カード内の小さなテキスト（メッセージ数、日付など） */
+.card-header .text-muted,
+.text-muted {
+    color: #a0a0a0 !important;
+}
+
+/* その他の見えにくいテキスト */
+.small, 
+small {
+    color: #b0b0b0 !important;
+}
+
+/* Bootstrap の一般的なテキストカラー */
+.text-secondary {
+    color: #a0a0a0 !important;
+}
+
+/* アイコンの色 */
+.bi {
+    color: inherit;
+}
+
+/* ボタン内のアイコン */
+.btn .bi {
+    color: inherit !important;
+}
+
+/* プライマリカラーのアイコン */
+.text-primary {
+    color: #4a90e2 !important;
+}
+
+/* 見えにくいテキストの全般的な対応 */
+.card-header h5,
+.card-header .h5 {
     color: #e0e0e0 !important;
 }
 
@@ -160,6 +209,9 @@ header {
     font-weight: 500;
     color: #e0e0e0;
     margin-bottom: 4px;
+    font-size: 0.85em;
+    word-break: break-all;
+    line-height: 1.3;
 }
 
 .session-preview {
